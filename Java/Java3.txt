@@ -1,0 +1,161 @@
+第三章 Java的基本程序设计结构
+
+浮点数值：报错 NaN 代表不是一个数字
+或者用 Double.isNaN( x ) 方法来检查 x 是不是一个数字
+
+用 final 来定义一个 常量（只能修改一次），而不是 const
+
+Math.round(x) 方法可以将一个精度类型的数值四舍五入到 long 型的数值
+
+String类：
+获取子串： substring(  起 ， 终 )
+String类对象不可修改，除非重新赋值
+用 equals 方法来判断两个字符串是否相等，不要用 == 号来判断
+或者用 compareTo 方法来判断，该方法取值为-1，0（相等），1
+
+String类有两个特殊值：空串：“”  ； 无对象：null
+其中空串用 equals 判断，null用 ==号判断
+
+length 方法将返回 给定字符串所需要的代码单元数量
+charAt 返回位置n的代码单元（从0开始），本质用法是 str[n]
+equalsIgnoreCase( xxx ) 方法用于和 xxx 比较是否相等（忽略大小写）
+
+indexOf( String str , int fromIndex ) ：
+匹配字符串并返回第一个匹配的位置，第二个参数可选
+
+lastIndexOf( String str , int fromIndex ) ：
+从最后开始匹配
+
+replace( 目标字符串 ，替换字符串 ) ：
+将对象中所有的目标字符串改为新字符串，并返回对象
+
+toLowerCase() / toUpperCase() ：大小写转换
+trim() ：删除开头和末尾的空格
+
+StringBuilder（字符串构建器） 可以更高效的拼接字符串
+（可以用 append 方法拼接）
+setCharAt( index , char ) 方法可以将下标字符改为char
+insert( index , str ) 方法可以在下标位置插入str，并返回新的对象
+length 方法会返回构建器的长度
+append( str / char ) 方法可以在末端添加字符/字符串
+delete( 起 , 止 ) 方法可以删除指定区间的字符（左闭右开，从0开始）
+
+在输出中可以用 System.out.printf 方法，且用法和C语言中相同
+格式化创建字符串时，可以用 String.format 方法，参数同 printf 方法
+
+在对时间 Date 格式化输出时，可以用 %t! ，其中 ! 为日期与时间转换符
+完整日期与时间可以用 %tc 
+% 后加 < 代表 % 前的参数再此引用，比如：
+System.out.printf("%d,%<d,%<d",1) ;    //输出为 1,1,1
+
+文件输入：
+Scanner in  = new Scanner( Paths.get( "文件路径" ) [, "编码"] ) ;
+(使用时记得用 try-catch 捕获异常，或者在方法上抛出异常 ）
+若文件路径中反斜杠，则需要再加一条反斜杠
+
+文件输出：
+PrintWriter out = new PrintWriter( "文件路径", "编码" )
+若无该文件，系统会创建该文件
+可以使用 write, print, println, printf 等方法写入文件
+注意，写入后需要用 flush 清除流缓存
+（若没有清除缓存，对象不会被写入文件）
+关闭对象方法 close 也会清除流缓存
+
+Scanner 不仅可以从 控制台/文件（ System.in / File ）读取
+也可以对字符串读取，即 Scanner(String data)
+PrintWriter也可以从字符串读取
+
+Path是个对象
+除了在构造时赋值，也可以使用 get(String pathname) 方法
+
+在Java中，不能在嵌套的两个代码块声明同名的变量
+比如以下的代码有错误：
+————————————————————
+public static void main(String[] args) {
+    int n;
+    ...
+    {
+        int n;    //错误
+        ...
+    }
+}
+————————————————————
+（但在C++允许如此，不过可能会导致程序错误）
+
+一般来说，for 循环开头3个部分应当对同一个计数器变量处理
+并且尽量不要用 double 类型，比如：
+for (double x = 0; x != 10; x +=0.1) ...
+这个循环可能不会结束，因为精度的原因，x 可能永远不会等于 10
+
+如果在 switch语句 中你没写 default，编译器不会报错
+如果需要报错，可以这样编译代码文件：
+javac -Xlint：fallthrough 文件名.java
+并且可以在 switch 外围标注 @SuppressWarnings("fallthrough")
+
+Java中提供了带标签的 break语句
+在希望跳出的 循环语句 外加个标签（ 格式：标签名加冒号 ）
+并在 break语句后加上标签名即可跳出循环，比如：
+————————————————————
+public static void main(String[] args) {
+    labelname:
+    while(...)
+    {
+        for (...)
+        {
+            break labelname;
+        }
+    }
+}
+————————————————————
+其他语句也可以用带标签的 break语句，但是要有代码块作用
+continue语句 也可以用标签，并且会跳到标签匹配的循环首部
+
+如果基本的整数和浮点数精度不能满足需求
+可以使用 java.math 中的 BigInteger / BigDecimal 类，即大数值类
+用 valueOf 方法可以将普通的数值转换为大数值
+BigInteger b = BigInteger.valueOf(100);
+但是，如果要用到 加减乘除模 ，不能直接用符号，分别对应：
+add subtract multiply divide mod（实参尽量用大数值类）
+
+获取数组大小可以直接在数组名后加 .length (无括号），比如：
+for (int i = 0; i < a.length; i++) ...
+
+Java中还有一种循环结构：for each循环，格式为：
+for (变量 : 集合) 语句
+其中，集合（collection）必须是个数组
+或者是一个实现了 Iterable(迭代功能)接口 的类对象，比如 ArrayList
+for each语句 中的变量可以称为（集合中的）元素
+比如如果想要打印 a数组，可以：
+————————————
+for (int element : a)
+        System.out.println(i);
+————————————
+
+数组变量间用等号表示引用而非赋值，两个变量将引用同一个数组
+如果要复制一个数组，可以用 Array类 里的 copyOf 方法，比如：
+int copyNumbers = Array.copyOf(numbers, numbers.length)
+其中，起一个参数是要复制的数组变量，第二个是新数组变量的长度
+如果长度大于被复制的数组长度，则会将多余的部分赋值 0
+Array类 还有几个常用的类方法：
+【优化的快速排序】sort(数组)
+【二分查找】(返回对应下标) binarySearch(数组, 起点, 终点, 值)
+（不成功则返回负数 r ， 且 -r-1 是为保持 数组 有序 值 应插入的位置）
+【全员赋值】fill(数组, 值)
+【比较】boolean equals(数组A, 数组B)
+
+命令行参数时，即对应 main函数 里的形参 String[] args
+在运行程序的时候，并不会把程序名储存在 args数组 中
+比如存在一个 Message.class 的文件
+终端输入：java Message -h
+args数组 里并不会有 Message ，即 args[0] 是 "-h"
+
+二维数组的 for each 遍历：
+————————————————————
+for(type[] row : a)
+        for(type value : row)
+            ...    //do something with value
+————————————————————
+或者调用 Array类 的类方法 deepToString 来快速获取所有元素列表
+
+
+Noted by Talaxy

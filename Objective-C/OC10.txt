@@ -1,0 +1,20 @@
+ARC：自动引用计数
+
+ARC判断原则：只要还有一个强指针指向对象，对象就会保持在内存中
+（在用ARC的时候尽量忘记MRC）
+
+默认情况下所有指针都是强指针
+如果要明确声明强指针，在指针声明前加上 __strong （两个下划线）
+比如 __strong  Person *p = [ [ Person alloc ] init ];
+反之，弱指针为 __weak
+开发的时候千万不要使用一个弱指针保存一个刚刚创建的对象
+ARC中重写dealloc不能写super
+@property ( nonatomic , strong ) Xxx *xxx ;
+不要用 assign 因为 assign 是专门用来处理基本数据类型的
+
+ARC和MRC一样，若两个类互相拥有，那么必须有一方使用弱指针（weak）
+
+ARC与MRC混编：https://www.jianshu.com/p/917926429b00
+
+MRC转ARC：Edit -> Convert -> To Objective-C ARC
+项目过于庞大的话，转换成功的机率会变小

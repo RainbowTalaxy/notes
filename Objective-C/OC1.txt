@@ -1,0 +1,55 @@
+id是一个动态数据类型
+动态类型特点：
+不知道变量的真实类型，只有运行的时候才知道
+id相当于一个万能指针
+弊端：运行的时候可能调用不到属于自己的方法，导致运行时错误
+应用场景：多态，减少代码量
+[obj isKindOfClass:[xxx class]] 是否是指定类或者其子类
+[obj isMemberOfClass:[xxx class]] 是否是指定类
+
+
+new相当于先alloc后init
+
+alloc方法做了什么事：
+1.开辟存储空间 2.将所有属性设置为0 3.返回地址
+例如：Person *p1 = [Person alloc];
+
+init方法做了什么事情
+1.初始化成员变量，默认是什么都没有做 2.返回地址
+例如：Person *p2 = [p1 init];
+
+或者 Person *p3 = [[Person alloc] init];
+
+init也就是构造方法
+在实现里重写init方法
+- (instancetype)init
+{
+	if (self = [super init]) {
+        	// Initialize self
+    	}
+   	return self;
+}
+
+id和instancetype区别：
+1.instancetype在编译的时候知道真实类型
+2.id可以声明变量，instancetype不可以
+init中返回值尽量用instancetype
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

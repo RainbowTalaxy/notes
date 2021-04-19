@@ -1,0 +1,75 @@
+第十章 文件和异常
+
+一个简单的文件打开并打印：
+with open(filename) as file_object:
+	contents = file_object.read()
+	print(contents)
+
+open 函数接受一个参数，即文件名
+关键字 with 会使打开的文件在不需要的时候自动关闭
+filename为目标文件，file_object是文件保存对象
+
+逐行读取：
+with open(filename) as file_object:
+	for line in file_object:
+		print(line)
+
+因为文件中存在看不见的换行符，打印的时候不管是整个打印还是逐行打印
+都可能有末尾出现多余空行的情况
+如果要去除多余空行，可以用 rstrip 方法，比如：
+print(contents.rstrip())
+
+创建一个包含文件各行内容的列表：
+with open(filename) as file_object:
+	lines = file_object.readlines()
+方法 readlines 从文件中读取每一行，并将其存储在一个列表中
+
+逻辑运算符 in 也可以用来判断某字符串是否存在于原有字符串中
+
+open 函数可以添加第二个参数来告诉Python处理文件的模式，比如：
+with open(filename, 'w') as file_object:
+	...
+这里 'w' 指 以写入模式打开这个文件
+
+除了 'w' 还有：
+读取模式（ 'r' ）、附加模式（ 'a' ）、读写模式（ 'r+' ）
+注意，使用 'w' 会清空所指文件，如果仅给文件添加内容，可以用 'a'
+附加模式下，如果文件不存在，会新创建这个文件
+
+如果省略了 open 的第二个参数，Python会默认以只读模式打开文件
+
+异常处理能避免程序的崩溃、防止源码泄露
+可以使用 try-except(-else) 代码块来进行异常处理，比如：
+try:
+	print(5/0)    #会报 除零错误
+except ZeroDivisionError:
+	print("You can't divide by zero!")
+else:
+	print("successfully calculated!")
+
+如果我们用 open 函数尝试读取一个不存在的文件
+Python会报 FileNotFoundError 错误
+
+字符串 split 方法作用是，以空格为分隔符将字符串拆分成多个部分
+并将这些部分存储在一个列表中
+
+如果要在发生异常的时候不发出任何信号，可以使用 pass 语句：
+try:
+	print(5/0)
+except ZeroDivisionError:
+	pass
+
+使用 json函数 进行数据存储：
+import json
+send = [2, 3, 4, 5]
+filename = 'test.json'
+with open(filename, 'w') as f:
+    json.dump(send, f)    #将numbers里的数据格式完整存储在文件中
+
+使用 json函数 进行数据加载：
+import json
+filename = 'test.json'
+with open(filename) as f:
+    receive = json.load(f)    #json中存储的东西会传给receive
+
+重构是指，将代码划分、修改，使代码更清晰、更易于理解、更容易扩展

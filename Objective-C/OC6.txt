@@ -1,0 +1,13 @@
+在声明文件中，使用@property
+基本数据类型用assign修饰符，对象用retain修饰符
+但凡在property使用了retain，就要在dealloc中release一下这个对象
+对象释放了最好指针置为空（nil或者0）
+比如：
+- ( void ) dealloc
+{
+	[ _text release ] ;
+	_text = nil ;
+	//或者直接 self.text = nil ; 
+	//( 点语法相当于调用set方法，会先release旧值）
+}
+

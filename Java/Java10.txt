@@ -1,0 +1,222 @@
+第10章 图形程序设计
+
+【框架】
+在Java中，顶层窗口（不被其他窗口所包含）被称为框架（frame）
+在 AWT 中有一个 Frame类，在 Swing 版本中为 JFrame
+绝大多数 Swing组件类 都以 J 开头
+不推荐将 Swing 和 AWT 组件混合使用
+一个简单的窗口：
+————————————————————————————————
+import java.awt.*;
+import javax.swing.*;
+
+public class SimpleFrameTest
+{
+    public static void main(String[] args) {
+        EventQueue.invokeLater(() ->
+        {
+            SimpleFrame frame = new SimpleFrame();
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setVisible(true);
+        });
+    }
+}
+
+class SimpleFrame extends JFrame
+{
+    private static final long serialVersionUID = 1L;
+
+    public SimpleFrame()
+    {
+        setSize(1920, 1080);
+    }
+}
+————————————————————————————————
+Swing类 位于 javax.swing包 中，包名为 javax 表示这是一个Java扩展包，而不是核心包
+
+在默认情况下，框架的大小为 0 × 0 像素
+
+在每个 Swing 程序中，有两个技术问题需要强调：
+其一，所有的 Swing组件 必须由 事件分派线程(event dispatch thread) 进行配置
+下面的代码片段是事件分派线程中的执行代码：
+————————————————
+EventQueue.invokeLater(() ->
+    {
+        statements
+    });
+————————————————
+其二，定义一个用户关闭这个框架时的相应动作
+比如上面 简单的窗口 样例中的相应动作是：
+frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+样例中 main 方法虽然已经退出，但是并未终止程序，终止的是主线程
+事件分派线程保持程序处于激活状态，直到关闭框架或者调用 System.exit 方法终止程序
+
+可以调用 frame.setUndecorated(true) 关闭所有框架装饰
+
+
+
+【Frame 类】
+————————————————————————————————
+public class Frame
+{
+    //窗口可调整设置
+    boolean isResizable();
+
+    void setResizable(boolean b);
+
+    //设置 title 属性
+    String getTitle();
+
+    void setTitle();
+
+    //设置 iconImage 属性，该属性确定框架的图标
+    Image getIconImage();
+
+    void setIconImage();
+
+    //设置 undecorated 属性，若为 true，框架本体将没有任何装饰
+    boolean isUndecorated();
+
+    void setUndecorated(boolean b);
+
+    //设置窗口状态
+    int getExtenedState();
+
+    void setExtendedState(int state);
+
+    ...
+}
+————————————————————————————————
+若要无装饰，在框架显示之前，必须调用 setUndecorated 方法
+
+窗口状态值 有以下几种：
+————————————————
+Frame.NORMAL
+Frame.ICONIFIED
+Frame.MAXMIZED_HORIZ
+Frame.MAXIZED_VERT
+Frame.MAXIZED_BOTH
+————————————————
+
+AWT 和 Swing 中的继承层次：
+Object <- Component <- Container <- JComponent <- JPanel
+Object <- Component <- Container <- Window <- Frame <- JFrame
+
+
+
+【Component 类】
+————————————————————————————————
+public class Component
+{
+    //设置 可见visible 属性，默认是可见的，但JFrame默认不可见
+    boolean isVisible();
+
+    void setVisible(boolean b);
+
+    //改变组件的大小
+    void setSize(int width, int height);
+
+    //将组件移到一个新的位置
+    void setLocation(int x, int y);
+
+    //移动并改变大小
+    void setBounds(int x, int y, int width, int height);
+
+    //设置当前组件的 size 属性
+    Dimension getSize();
+
+    void setSize(Dimension d);
+
+    ...
+}
+————————————————————————————————
+在 setLocation 中，如果组件是顶层组件，则 x, y 坐标为屏幕坐标，否则是容器坐标
+
+
+
+【Window 类】
+————————————————————————————————
+public class Window
+{
+    //将窗口显示在其他窗口前面
+    void toFront();
+
+    void toBack();
+
+    //由平台来选择一个合适的位置，并且需要在窗口显示之前设置
+    boolean isLocationByPlatform();
+
+    void setLocationByPlatform(boolean b);
+
+    ...
+}
+————————————————————————————————
+
+
+
+【Toolkit 类】
+Toolkit类 中包含很多与本地窗口系统打交道的方法
+————————————————————————————————
+public class Toolkit
+{
+    //返回默认的工具箱
+    static Toolkit getDefaultToolkit();
+
+    //返回用户屏幕的尺寸
+    Dimension getScreenSize();
+
+    ...
+}
+————————————————————————————————
+
+以下是一个获取用户屏幕尺寸的代码：
+————————————————
+Toolkit kit = Toolkit.getDefaultToolkit();
+Dimension screenSize = kit.getScreenSize();
+int screenWidth = screenSize.width;
+int screenHeight = screenSize.height;
+————————————————
+
+
+
+【ImageIcon 类】
+————————————————————————————————
+public class ImageIcon
+{
+    //构造一个图标，filename 即为图像文件地址
+    ImageIcon(String filename);
+
+    //获得该图标的图像
+    Image getImage();
+
+    ...
+}
+————————————————————————————————
+
+以下是一个设置框架图标的代码：
+————————————————
+Image img = new ImageIcon("文件地址").getImage();
+frame.seticonimage(img);
+————————————————
+
+P415
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

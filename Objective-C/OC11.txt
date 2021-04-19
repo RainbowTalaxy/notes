@@ -1,0 +1,30 @@
+可以用 typedef 来重命名函数指针类型或者Block类型
+比如:
+typedef int ( * calculate ) ( int , int ) ;
+其中 calculate 就是别名
+
+Block的应用场景：
+当函数里代码的前面和后面都相同时，这个时候可以使用Block
+比如：
+void goToWork( void (^workBlock) () )
+{
+	...
+	workBlock() ;
+	...
+}
+
+Block注意事项：
+Block可以访问代码块外面的变量（非存在局部变量情况下）
+默认情况下，不可以在block中修改外界变量的值
+同时也不会随外界变量变化而变化
+（block将外面的变量拷贝了一份）
+实际上block会将外界变量当作函数的参数代入
+
+外界变量若要使block能修改，应该在生面的类型前面加上 __block（双下划线）
+比如： __block int a =0 ;
+
+默认情况下block存储在栈里
+如果对block进行一个copy操作，block会转移到堆中
+如果block在栈中，block中访问了外界的对象，那么不会对对象进行retain操作
+但是如果block在堆中，block中访问了外界的对象，那么会对外界进行一次retain
+（拷贝是指 Block_copy(xxx) ; 函数调用）

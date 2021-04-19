@@ -1,0 +1,18 @@
+autorelease是一种支持引用计数的内存管理方式
+给对象发送autorelease消息就会将对象放到一个自动释放池
+如 [ p autorelease ] （该方法会	返回对象本身，并且不会修改引用计数器）
+
+@autoreleasepool{} 自动释放池
+自动释放池销毁了，会给释放池中所有对象发送一条release消息
+但不一定会释放所有对象
+
+注意点
+一定要把对象放在自动释放池里才能使用autorelease
+只有调用了autorelease，对象才会在自动释放池中自动销毁
+自动释放池不宜放内存占用大的对象
+尽量不要再自动释放池中使用循环，尤其是循环次数比较多的（对象）
+（如果非要用自动释放池的话，要在for里创建自动释放池）
+自动释放池支持嵌套（以栈的形式存储）
+在自动释放池中，一个对象只要用一次autorelease（或release），不要用多次
+写了autorelease就不要再写release
+一个alloc对应一个release或者autorelease

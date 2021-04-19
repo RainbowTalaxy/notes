@@ -1,0 +1,26 @@
+@property(retain) int age;      retain修饰符自动生成set方法内存管理代码
+assign（默认值）修饰符：不会帮我们生成set方法内存管理的代码，
+仅仅生成getter/setter方法
+
+set方法要做的三件事：
+1.判断传入的对象和当前对象是否一样
+2.release以前的对象
+3.retain传入的对象
+如：
+- ( void ) setRoom : ( Room * ) room
+{
+	if ( _room != room ) {
+		[ _room release ] ;
+		_room = [ room retain ] ;
+	}
+}
+
+property中注意点：
+1.相同类型修饰符不能同时使用，比如readonly和readwrite（getter和setter除外）
+2.不同类型的修饰符可以结合在一起使用，修饰符之间用逗号隔开
+3.iOS开发中只要写上property，那么立刻写上nonatomic修饰符
+
+多线程：
+atomic：低性能（默认）
+nonatomic：性能高
+iOS开发中99.99%都是写nonatomic

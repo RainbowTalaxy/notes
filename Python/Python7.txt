@@ -1,0 +1,39 @@
+第十一章 测试代码
+
+Python标准库中的模块unittest提供了代码测试工具
+单元测试用于核实函数的某个方面没有问题
+
+函数测试样例：
+————————————————————————
+import unittest
+from module import function
+
+class FuncTestCase(unittest.TestCase):
+	"""测试function"""
+
+	def test_first(self):
+		"""能够正确处理像XXX的数据吗？"""
+		result = function(x1, x2, x3, ...)
+		answer = ...
+		self.assertEqual(result, answer)
+
+	def test_second(self):
+		...
+
+unittest.main()
+————————————————————————
+运行的时候，所有 test_ 开头的方法都将自动运行
+assertEqual 方法是用来比较 result 和 answer是否相同
+如果相同，则输出点符号 " . "， 如果不同，输出 "F", 如果出错，输出 "E"
+
+assertEqual 方法属于 unittest 模块中的断言方法
+除了 assertEqual(a, b)，还有：
+assertNotEqual(a, b)		核实 a != b
+assertTrue(x) / assertFalse(x)		核实 x 为 True / False
+assert(Not)In(item, list)		核实 item (不)在 list 中
+
+对类的测试与函数差不多
+
+在测试方法中，可以使用 setUp 方法来创建调查对象和答案
+以此来供多个测试方法使用这些数据
+setUp 方法会在调用 test_ 方法之前调用

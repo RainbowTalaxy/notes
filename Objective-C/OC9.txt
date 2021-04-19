@@ -1,0 +1,12 @@
+autorelease类工厂方法
+
++ (instancetype) xxx
+{
+	return [ [ [ self alloc ] init ] autorelease ] ;
+}
+
+带参的类工厂方法只要直接返回 [ xxx autorelease ]
+写带参类工厂方法记得先写对象init带参方法
+
+
+

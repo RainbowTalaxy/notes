@@ -1,0 +1,23 @@
+代码区，堆区（存储对象），栈区（局部变量），？，？
+
+如何获取类对象
+Class c = [p class];
+c成为类对象，每个类只有一种类对象
+
+类的启动
+会加载load类方法，且仅会调用一次
+还有initialize类方法，也且仅调用一次
+如果有继承关系，会先加载父类的，然后子类
+
+SEL类型
+1.SEL类型的第一作用，配合对象/类来检查对象/类中有没有实现某一个方法
+SEL sel = @selector(xxx);
+Person *p = [Person new];
+BOOL flag = [p respondsToSelector:sel];
+
+2.配合对象/类调用方法
+[p performSelector]
+[p performSelector:sel withObject:xxxx withObject:xxxx]
+performSelector最多传递两个参数
+
+3.配合对象将SEL作为形参

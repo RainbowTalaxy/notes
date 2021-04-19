@@ -1,0 +1,415 @@
+第九章 集合
+
+【Collection 接口】
+——————————————————————————————
+public interface Collection<E>
+{
+    //向集合中添加元素，添加成功返回 true
+    boolean add(E element);
+
+    boolean addAll(Collection<? extends E> other);
+
+    //返回一个用于访问集合的迭代器
+    Iterator<E> iterator();
+
+    //返回当前集合中的元素个数
+    int size();
+
+    //如果集合中包含 obj 返回 true
+    boolean contains(Object obj);
+
+    //如果集合包含 other 中的所有元素，返回true
+    boolean containsAll(Collection<?> other);
+
+    //删除，删除成功返回 true
+    boolean remove(Object obj);
+
+    boolean removeAll(Collection<?> other);
+
+    //根据 filter 删除符合的元素
+    default boolean removeIf(Predicate<? super E> filter);
+
+    //清空集合
+    void clear();
+
+    //仅保留集合和 other 并有的元素
+    boolean retainAll(Collection<?> other);
+
+    //返回这个集合的对象数组
+    Object[] toArray();
+
+    /*如果 arrayToFill 足够大，集合中的元素将填入这个数组中，剩余补 null
+      否则将为 arrayToFill 新分配一个与集合一样大的数组并填充*/
+    <T> T[] toArray(T[] arrayToFill);
+
+    ...
+}
+——————————————————————————————
+Collection 里的方法很多，
+为了能让实现者更容易实现这个接口，Java提供了 AbstractCollection 类
+该类仅将 size 和 iterator 抽象了，其余都有默认方法
+
+
+
+
+
+【Iterator 接口】
+与C++不同，Java的迭代器应当认为是处于两个元素之间
+——————————————————————————————
+public interface Iterator<E>
+{
+    //访问下一个元素
+    E next();
+
+    //若还有多个供访问的元素，返回true
+    boolean hasNext();
+
+    //删除上次调用 next 方法时返回的元素
+    void remove();
+
+    //实参里提供 lambda 表达式，每个元素都会调用这个表达式
+    default void forEachRemaining(Consumer<? super E> action);
+    
+    ...
+}
+——————————————————————————————
+若调用 next 到达了集合的末尾，next 会抛出一个 NoSuchElementException
+若调用 remove 之前没有调用 next 将会抛出一个 IllegalStateException
+同样，remove 不允许直接连续使用
+
+
+
+
+
+【List 接口】
+——————————————————————————————
+public interface List<E>
+{
+    //返回一个列表迭代器
+    ListIterator<E> listIterator();
+
+    //从指定位置返回一个迭代器
+    ListIterator<E> listIterator(int index);
+
+    //指定位置添加元素
+    void add(int index, E element);
+
+    void add(int index, Collection<? extends E> elements);
+
+    //删除并返回给定位置元素
+    E remove(int index);
+
+    E get(int index);
+
+    //用 element 取代旧元素，并返回原来的元素
+    E set(int i, E element);
+
+    //返回 element 在列表中第一次出现的位置
+    int indexOf(Object element);
+
+    int lastIndexOf(Object element);
+
+    ...
+}
+——————————————————————————————
+
+
+
+
+
+【ListIterator 接口】
+ListIterator 继承了 Iterator，所以拥有父类的接口方法
+——————————————————————————————
+public interface ListIterator<E>
+{
+    //在列表中（迭代器所在的位置前面）加上元素
+    void add(E newElement);
+
+    //用 newElement 取代上次迭代访问的元素
+    void set(E newElement);
+
+    //反向迭代列表时，还有可访问的返回 true
+    boolean hasPrevious();
+
+    //返回迭代器所在的前一个元素
+    E previous();
+
+    //返回下一个调用 next 时将返回的元素索引
+    int nextIndex();
+
+    int previousIndex();
+
+    ...
+}
+——————————————————————————————
+若使用 set 之前，在 next 或 previous 上次调用之后列表结构被修改了，
+将抛出一个 IllegalStateException
+但如果是其他方式把列表结构修改了，链表迭代器就不能再使用了，
+并抛出一个 ConcurrentmodificationException
+为了避免发生并发迭代器修改的异常：
+可以有许多的迭代器，但是能写的迭代器只能有一个
+
+若已经到达了列表的头部（没有可迭代的元素），
+previous 也会抛出 NoSuchElementException
+
+add方法 只依赖于迭代器的位置，而 remove方法 依赖于迭代器的状态
+
+
+
+
+
+【LinkedList 类】
+——————————————————————————————
+public class LinkedList<E>
+{
+    //构造一个空列表
+    LinkedList();
+    //用集合中的元素来构造一个列表
+    LinkedList(Collection<? extends E> elements);
+
+    void addFirst(E element);
+    void addLast(E element);
+
+    E getFirst();
+    E addLast();
+
+    E removeFirst();
+    E removeLast();
+}
+——————————————————————————————
+
+
+
+
+
+【HashSet 类】
+——————————————————————————————
+public class HashSet<E>
+{
+    //构造一个空散列集
+    HashSet();
+
+    //以集合 elements 构造一个散列集
+    HashSet(Collection<? extends E> elements);
+
+    //构造一个指定容量的散列集
+    HashSet(int initialCapacity);
+
+    //构造一个具有指定容量和装填因子(0.0 ~ 1.0之间的数值，超过这个数值会再散列)
+    HashSet(int initialCapacity, float loadFactor);
+
+    ...
+}
+——————————————————————————————
+一般装填因子为 0.75 为宜
+
+Object类 中的 hashCode方法 会返回这个对象的散列码
+散列码可以是任何整数，包括正数或负数
+如果 x.equals(y) 为 true，则 x.hashCode() 必须等于 y.hashCode()
+
+
+
+
+
+【TreeSet 类】
+树集与散列集十分相似，但有所改进
+树集是一个有序集合，插入操作 会比散列集慢，但 查找 是比散列集以及数组列表快的
+——————————————————————————————
+public class TreeSet<E>
+{
+    //构造一个空树集
+    TreeSet();
+
+    TreeSet(Collection<? extends E> elements);
+
+    //以 s 构造一个树集，且顺序与 s 相同
+    TreeSet(SortedSet<E> s);
+
+    //根据 比较器comparator 排序来构造一个树集
+    TreeSet(Comparator<? extends E> Comparator);
+
+    ...
+}
+——————————————————————————————
+树集是顺序的，要使用树集，必须能够比较元素
+这些元素必须实现 Comparable 接口，或者构造树集的时候提供一个 比较器
+
+
+
+
+
+【SortedSet 接口】
+——————————————————————————————
+public interface SortedSet<E>
+{
+    //返回一个比较器
+    Comparator<? extends E> comparator();
+
+    //返回第一个元素
+    E first();
+
+    E last();
+
+    //返回一个子集合
+    SortedSet<E> subSet​(E fromElement, E toElement);
+
+    SortedSet<E> tailSet​(E fromElement);
+
+    ...
+}
+——————————————————————————————
+
+
+
+
+
+【NavigableSet 接口】
+——————————————————————————————
+public interface Navigable<E>
+{
+    //返回大于 value 的最小元素
+    E higher(E value);
+
+    E lower(E value);
+
+    //返回大于等于 value 的最小元素
+    E ceiling(E value);
+
+    E floor(E value);
+
+    //删除并返回集中的最大元素
+    E pollFirst();
+
+    E pollLast();
+
+    //返回一个按照递减顺序遍历集中元素的迭代器
+    Iterator<E> decendingIterator();
+
+    ...
+}
+——————————————————————————————
+
+
+
+
+
+【Queue 接口】
+队列只能在队尾加入，队头删除
+——————————————————————————————
+public interface Queue<E>
+{
+    //如果队列已满，将不会插入元素，并返回 false
+    boolean offer(E element);
+
+    //如果队列已空，返回 null
+    E poll();
+
+    //返回队头的元素
+    E element();
+
+    //如果队列已空，返回 null
+    E peek();
+
+    ...
+}
+——————————————————————————————
+如果队列已满，使用 add 方法会抛出 IllegalStateException
+如果队列已空，使用 remove/element 方法会抛出 NoSuchElementException
+
+
+
+
+
+【Deque 接口】
+——————————————————————————————
+public interface Deque<E>
+{
+    //插入
+    void addFirst(E element);
+
+    void addLast(E element);
+
+    boolean offerFirst(E element);
+
+    boolean offerLast(E element);
+
+    //删除
+    E removeFirst();
+
+    E removeLast();
+
+    E pollFirst();
+
+    E pollLast();
+
+    //访问
+    E getFirst();
+
+    E getLast();
+
+    E peekFirst();
+
+    E peekLast();
+
+    ...
+}
+——————————————————————————————
+方法报错同 Queue接口
+
+
+
+
+
+【ArrayDeque 类】
+——————————————————————————————
+public interface ArrayDeque<E>
+{
+    //构造一个初始容量为 16 的双端队列
+    ArrayDeque();
+
+    //构造一个指定容量的双端队列
+    ArrayDeque(int initialCapacity);
+
+    ...
+}
+——————————————————————————————
+
+
+
+
+
+【PriorityQueue 类】
+——————————————————————————————
+public class PriorityQueue<E>
+{
+    PriorityQueue();
+
+    //根据比较器构造一个指定大小的优先队列，两个形参均为可选
+    PriorityQueue(int initialCapacity, Comparator<? super E> c);
+
+    //通过 实现了SortedSet接口的对象 构造一个优先队列
+    PriorityQueue(SortedSet<? extends E> c);
+
+    ...
+}
+——————————————————————————————
+接口作为形参，实现了该接口的类的对象都能当作实参
+
+P372
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

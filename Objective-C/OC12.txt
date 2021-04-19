@@ -1,0 +1,15 @@
+Category 基本概念
+
+Category的作用：
+在不修改原来类的基础上，为这个类扩充一些方法
+将一个庞大的类分模块开发，因此可以由多人来编写，利于团队合作
+
+Category也有声明和实现
+声明：
+@interface Classname (CategoryName)
+	NewMethod;
+@end
+实现也相同
+
+创建Category：cmd+N(New) -> Objective-C File ->File Type : Category
+(名称自定义，即CategoryName）文件名会自动命名为：Class+自定义名称

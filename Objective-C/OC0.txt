@@ -1,0 +1,54 @@
+私有成员变量
+implementation中可以定义成员变量，但是只能在本类类中访问
+在interface中定义的成员变量，即使是修饰过的，也能在其他类中访问（仅可访问）
+OC中没有真正的私有方法
+
+@property
+@property是一个编译器指令
+声明的时候成员变量前不用加下划线，并且需要在前面补充成员变量的类型
+比如：@property int age;
+
+@synthesize
+@synthesize后加上对应的property变量名以及赋值对象
+比如：
+@property int age;
+@synthesize age = _age;
+如果是 @synthesize age; 默认传给age变量而非_age（默认传给名称相同的变量）
+最新版本中仅需要写一个@property，可以不写@synthesize，并且实现方法会将传入值返回给带下划线的变量
+@property的弊端：只能生成最简单的getter/setter方法（可以重写方法）
+使用 @property type name; 系统会自动在实现方法中生成对应的私有成员变量
+
+@property修饰符
+比如@property(readonly) int age; (只生成getter方法)
+还有 readwrite可读可写(默认) setter/getter=method修改方法名
+比如@property(getter=abc) double height;
+
+id是一种动态类型指针（之前的都是静态类型）
+id近似于NSObject *，但是NSObject *不能调用子类方法
+id的弊端：可以用任意的方法，可能找不到方法
+id应用场景：多态
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
